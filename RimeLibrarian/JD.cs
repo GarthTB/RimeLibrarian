@@ -15,14 +15,14 @@
 
         private static bool IsValid(string originWord, out string validChars)
         {
-            char[] vc = originWord.Where(c => Dan.Contains(c)).ToArray();
+            var vc = originWord.Where(c => Dan.Contains(c)).ToArray().AsSpan();
             if (vc.Length < 2)
             {
                 validChars = string.Empty;
                 return false;
             }
             validChars = vc.Length > 4
-                ? string.Concat(vc[..3], vc[^1])
+                ? $"{new string(vc[..3])}{vc[^1]}"
                 : new string(vc);
             return true;
         }

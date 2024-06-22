@@ -19,9 +19,10 @@ namespace RimeLibrarian
                 Help.Show();
         }
 
+        #region 载入、关闭和日志
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //程序上级目录
             string location = Path.GetFullPath(@"..\xkjd6.cizu.dict.yaml");
             if (LoadLib(location))
             {
@@ -29,7 +30,6 @@ namespace RimeLibrarian
                 return;
             }
 
-            //Rime默认目录
             location = $@"C:\Users\{Environment.UserName}\AppData\Roaming\Rime\xkjd6.cizu.dict.yaml";
             if (LoadLib(location))
             {
@@ -37,7 +37,6 @@ namespace RimeLibrarian
                 return;
             }
 
-            //都没有
             MessageBox.Show("未能自动载入Rime键道词库。\n请手动选择词库。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
             while (Dict.Count == 0)
             {
@@ -67,7 +66,7 @@ namespace RimeLibrarian
             return false;
         }
 
-        private static string SetLibLocation()//选择词库位置
+        private static string SetLibLocation()
         {
             OpenFileDialog ofd = new()
             {
@@ -113,5 +112,113 @@ namespace RimeLibrarian
             lp.ShowDialog();
             Show();
         }
+
+        #endregion
+
+        #region 加词（左边）
+
+        private HashSet<string> FullCodes = new();
+        private List<string> CurrentCodes = new();
+        private int length = 4;
+
+        private void RefreshButton()
+        {
+            ButtonAdd.IsEnabled = PriorityBox.IsEnabled = (WordBox.Text.Length > 1 && CodeCombo.SelectedItem is not null)
+                                                          || (WordBox.Text.Length > 0 && CodeBox.Text.Length > 0);
+        }
+
+        private void LoadAutoWords()
+        {
+            CurrentCodes = FullCodes.Select(x => x[..length])
+                                    .Distinct()
+                                    .OrderBy(x => x)
+                                    .ToList();
+            CodeCombo.ItemsSource = CurrentCodes;
+            CodeCombo.SelectedIndex = 0;
+        }
+
+        private void UnloadAutoWords()
+        {
+            CurrentCodes.Clear();
+            CodeCombo.ItemsSource = null;
+        }
+
+        private void WordBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (WordBox.Text.Length > 1
+                && JD.Encode(WordBox.Text, out IEnumerable<string>? codes)
+                && codes is not null)
+            {
+                CodeBox.Text = string.Empty;
+                FullCodes = codes.ToHashSet();
+                LoadAutoWords();
+            }
+            else
+            {
+                FullCodes.Clear();
+                UnloadAutoWords();
+            }
+            RefreshButton();
+        }
+
+        private void CodeCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            SearchBox.Text = CodeCombo.SelectedItem is null
+                ? string.Empty
+                : (string)CodeCombo.SelectedItem;
+        }
+
+        private void CodeLengthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (CodeCombo.ItemsSource is not null)
+            {
+                length = (int)CodeLengthSlider.Value;
+                LoadAutoWords();
+            }
+        }
+
+        private void CodeBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            SearchBox.Text = CodeBox.Text;
+            if (CodeBox.Text.Length > 0)
+            {
+                if (CodeCombo.ItemsSource != null)
+                    UnloadAutoWords();
+            }
+            else if (FullCodes.Count > 0)
+                LoadAutoWords();
+            RefreshButton();
+        }
+
+        private int GetPriority()
+        {
+            if (PriorityBox.Text.Length == 0) return 0;
+            if (int.TryParse(PriorityBox.Text, out int priority)) return priority;
+            else MessageBox.Show("优先级无法识别，已忽略！", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return 0;
+        }
+
+        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
+        {
+            int priority = GetPriority();
+            string code = CodeBox.Text.Length == 0
+                ? (string)CodeCombo.SelectedItem
+                : CodeBox.Text;
+            Dict.Add(WordBox.Text, code, priority);
+            Log.Add($"添加\t{WordBox.Text}\t{CodeBox.Text}\t{priority}");
+            WordBox.Text = string.Empty;//这里会清空右边的表格
+            SearchBox.Text = code;//这里相当于更新右边的表格
+        }
+
+        #endregion
+
+        #region 其他功能（右边）
+
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+
+        }
+
+        #endregion
     }
 }
