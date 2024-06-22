@@ -17,11 +17,11 @@
         <TextBox
             x:Name="WordBox"
             Width="230"
-            Margin="10,10,10,153"
+            Margin="10,10,10,138"
             TextWrapping="Wrap" />
         <TextBox
             x:Name="CodeBox"
-            Margin="10,164,10,111"
+            Margin="10,181,10,94"
             MaxLength="16"
             TextWrapping="Wrap" />
         <TextBox

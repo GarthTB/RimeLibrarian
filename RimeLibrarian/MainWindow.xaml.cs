@@ -82,7 +82,14 @@ namespace RimeLibrarian
         {
             string location = SetLibLocation();
             if (location.Length > 0)
+            {
                 LoadLib(location);
+                WordBox.Text = string.Empty;
+                CodeBox.Text = string.Empty;
+                PriorityBox.Text = string.Empty;
+                SearchBox.Text = string.Empty;
+                Log.Clear();
+            }
             else MessageBox.Show("未载入词库，继续使用原有词库。", "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
@@ -209,8 +216,8 @@ namespace RimeLibrarian
                     : CodeBox.Text;
                 Dict.Add(WordBox.Text, code, priority);
                 Log.Add($"添加\t{WordBox.Text}\t{CodeBox.Text}\t{priority}");
-                WordBox.Text = string.Empty;//这里会清空右边的表格
-                SearchBox.Text = code;//重新放入，相当于更新右边的表格
+                WordBox.Text = string.Empty;
+                LoadResults();
             }
             catch (Exception ex)
             {

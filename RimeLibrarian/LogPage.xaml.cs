@@ -9,7 +9,7 @@ namespace RimeLibrarian
         public LogPage()
         {
             InitializeComponent();
-            KeyDown += new KeyEventHandler(HotKeys);
+            KeyUp += new KeyEventHandler(HotKeys);
             ShowLog();
         }
 
