@@ -91,7 +91,7 @@
         </DataGrid>
         <Label Margin="18,16,220,388" Content="字词" />
         <Label Margin="18,196,220,209" Content="编码" />
-        <Label Margin="18,240,220,162" Content="码长" />
+        <Label Margin="18,242,220,162" Content="码长" />
         <Label Margin="18,288,188,117" Content="手动编码" />
         <Label Margin="18,334,145,70" Content="优先级（可选）" />
         <Label

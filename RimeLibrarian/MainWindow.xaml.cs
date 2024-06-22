@@ -215,7 +215,7 @@ namespace RimeLibrarian
                     ? (string)CodeCombo.SelectedItem
                     : CodeBox.Text;
                 Dict.Add(WordBox.Text, code, priority);
-                Log.Add($"添加\t{WordBox.Text}\t{CodeBox.Text}\t{priority}");
+                Log.Add($"添加\t{WordBox.Text}\t{code}\t{priority}");
                 WordBox.Text = string.Empty;
                 LoadResults();
             }
