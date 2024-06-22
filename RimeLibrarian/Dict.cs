@@ -6,6 +6,9 @@ namespace RimeLibrarian
     {
         private static readonly List<string> _shit = new(0);
         private static readonly HashSet<Entry> _dict = new(0);
+        private static string _path = string.Empty;
+
+        public static int Count => _dict.Count;
 
         public static void Load(string path)
         {
@@ -24,10 +27,13 @@ namespace RimeLibrarian
             }
             if (!_dict.Any())
                 throw new Exception("词库文件为空！");
+            _path = path;
         }
 
-        public static void Save(string path)
+        public static void Save(string? path = null)
         {
+            if (_path.Length == 0) return;
+            path ??= _path;
             using StreamWriter sw = new(path, false, System.Text.Encoding.UTF8);
             if (_shit.Any())
                 foreach (var shit in _shit)
@@ -39,13 +45,7 @@ namespace RimeLibrarian
                 else sw.WriteLine($"{sd.Word}\t{sd.Code}\t{sd.Priority}");
         }
 
-        public static void Add(string word, string code)
-        {
-            if (!_dict.Add(new Entry(word, code)))
-                throw new Exception("词库中已存在该词条！");
-        }
-
-        public static void Add(string word, string code, int priority)
+        public static void Add(string word, string code, int priority = 0)
         {
             if (!_dict.Add(new Entry(word, code, priority)))
                 throw new Exception("词库中已存在该词条！");

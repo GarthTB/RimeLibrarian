@@ -36,14 +36,14 @@ namespace RimeLibrarian
 
         private static string SetLocation()
         {
-            SaveFileDialog sl = new()
+            SaveFileDialog sfd = new()
             {
                 DefaultExt = ".txt",
                 FileName = $"xkjd6.cizu.log({DateTime.Now:yyyy-MM-dd-HH-mm-ss}).txt",
                 Filter = "词库修改日志 (.txt)|*.txt",
                 Title = "日志将放在"
             };
-            return sl.ShowDialog() == true ? sl.FileName : string.Empty;
+            return sfd.ShowDialog() == true ? sfd.FileName : string.Empty;
         }
     }
 }

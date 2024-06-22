@@ -23,26 +23,15 @@ namespace RimeLibrarian
                 throw new Exception("单字文件为空！");
         }
 
-        public static bool Contains(string dan)
+        public static bool Contains<T>(T dan) where T : IComparable
         {
-            return _dict.Any(e => e.Word == dan);
+            string? value = dan.ToString();
+            return _dict.Any(e => e.Word.CompareTo(value) == 0);
         }
 
-        public static bool Contains(char dan)
+        public static IEnumerable<string> FullCodesOf<T>(T dan) where T : IComparable
         {
-            return _dict.Any(e => e.Word == dan.ToString());
-        }
-
-        public static IEnumerable<string> FullCodesOf(string dan)
-        {
-            var codes = _dict.Where(e => e.Word == dan && e.Code.Length > 3)
-                             .Select(e => e.Code);
-            return codes.Any() ? codes : throw new Exception("找不到符合条件的单字！");
-        }
-
-        public static IEnumerable<string> FullCodesOf(char dan)
-        {
-            var codes = _dict.Where(e => e.Word == dan.ToString() && e.Code.Length > 3)
+            var codes = _dict.Where(e => e.Word.CompareTo(dan.ToString()) == 0 && e.Code.Length > 3)
                              .Select(e => e.Code);
             return codes.Any() ? codes : throw new Exception("找不到符合条件的单字！");
         }

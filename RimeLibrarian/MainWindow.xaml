@@ -7,21 +7,25 @@
     Width="600"
     Height="450"
     mc:Ignorable="d"
+    Closing="Window_Closing"
     FontSize="16"
     Icon="/logo.png"
+    Loaded="Window_Loaded"
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"
-    Title="Rime词库管理器"
-    Loaded="Window_Loaded"
-    Closing="Window_Closing">
+    Title="Rime词库管理器">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="7*" />
             <ColumnDefinition Width="8*" />
         </Grid.ColumnDefinitions>
-        <TextBox Margin="76,18,10,209" TextWrapping="Wrap" />
-        <ComboBox Margin="76,250,10,159" />
+        <TextBox
+            x:Name="WordBox"
+            Margin="76,18,10,209"
+            TextWrapping="Wrap" />
+        <ComboBox x:Name="CodeCombo" Margin="76,250,10,159" />
         <Slider
+            x:Name="CodeLengthSlider"
             Margin="76,294,8,117"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
@@ -34,12 +38,17 @@
             SmallChange="1"
             TickPlacement="TopLeft"
             Ticks="3 4 5 6" />
-        <TextBox Margin="114,338,10,72" TextWrapping="Wrap" />
         <TextBox
+            x:Name="CodeBox"
+            Margin="114,338,10,72"
+            TextWrapping="Wrap" />
+        <TextBox
+            x:Name="SearchBox"
             Grid.Column="1"
             Margin="108,20,24,390"
             TextWrapping="Wrap" />
         <DataGrid
+            x:Name="ItemList"
             Grid.Column="1"
             Width="280"
             Margin="16,68,24,72"
@@ -64,48 +73,60 @@
         <Label Margin="18,16,220,389" Content="字词" />
         <Label Margin="18,248,220,157" Content="编码" />
         <Label Margin="18,292,220,114" Content="码长" />
-        <Label Margin="18,336,188,70" Content="手动编码" />
+        <Label Margin="18,336,188,69" Content="手动编码" />
         <Label
             Grid.Column="1"
             Margin="12,18,234,389"
             Content="编码查询" />
         <Button
-            Margin="24,384,168,21"
-            Background="#FFF0F0F0"
-            Content="查看日志" />
-        <Button
+            x:Name="ButtonReload"
             Height="30"
-            Margin="132,384,88,21"
+            Margin="24,384,196,21"
             Background="#FFF0F0F0"
-            Content="重载" />
+            Content="重载" Click="ButtonReload_Click" />
         <Button
+            x:Name="ButtonLog"
+            Margin="102,384,89,21"
+            Background="#FFF0F0F0"
+            Content="查看日志" Click="ButtonLog_Click" />
+        <Button
+            x:Name="ButtonAdd"
             Height="30"
             Margin="210,384,10,21"
             Background="#FFF0F0F0"
-            Content="加词" />
+            Content="加词" IsEnabled="False" />
         <Button
+            x:Name="ButtonDel"
             Grid.Column="1"
             Height="30"
             Margin="16,384,244,21"
             Background="#FFF0F0F0"
-            Content="删除" />
+            Content="删除"
+            IsEnabled="False" />
         <Button
+            x:Name="ButtonTop"
             Grid.Column="1"
             Height="30"
             Margin="90,384,170,21"
             Background="#FFF0F0F0"
-            Content="置顶" />
+            Content="置顶"
+            IsEnabled="False" />
         <Button
+            x:Name="ButtonMod"
             Grid.Column="1"
             Height="30"
             Margin="162,384,98,21"
             Background="#FFF0F0F0"
-            Content="修改" />
+            Content="修改"
+            IsEnabled="False" />
         <Button
+            x:Name="ButtonYes"
             Grid.Column="1"
             Height="30"
             Margin="236,384,24,21"
             Background="#FFF0F0F0"
-            Content="确认" />
+            Content="确认"
+            IsEnabled="False" />
     </Grid>
 </Window>
+    
