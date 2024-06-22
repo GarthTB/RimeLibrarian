@@ -84,5 +84,10 @@ namespace RimeLibrarian
             var codes = _dict.Where(e => e.Word == word).Select(e => e.Code);
             return codes.Any() ? codes : throw new Exception("词库中不存在该词！");
         }
+
+        public static IEnumerable<Entry> AllStartsWith(string prefix)
+        {
+            return _dict.Where(e => e.Code.StartsWith(prefix));
+        }
     }
 }

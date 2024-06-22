@@ -48,5 +48,24 @@
                      select new string(new[] { c1[0], c2[0], c3[0], c4[0], c1[2], c2[2] })
             };
         }
+
+        public static string Lengthen(string word, string code)
+        {
+            if (!Encode(word, out IEnumerable<string>? codes) || codes is null)
+                throw new ArgumentException("无法为短码的词自动编码！");
+
+            codes = codes.Where(c => c.StartsWith(code)).Distinct();
+
+            if (codes.Count() != 1)
+                throw new Exception("加长方式不唯一！");
+
+            string result = codes.First();
+
+            for (int i = code.Length + 1; i < 6; i++)
+                if (!Dict.HasCode(result[..i]))
+                    return result[..i];
+
+            return result;
+        }
     }
 }

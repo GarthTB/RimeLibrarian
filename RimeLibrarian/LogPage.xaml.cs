@@ -10,12 +10,19 @@ namespace RimeLibrarian
         {
             InitializeComponent();
             KeyDown += new KeyEventHandler(HotKeys);
+            ShowLog();
         }
 
         private void HotKeys(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F1)
                 SaveLog();
+        }
+
+        private void ShowLog()
+        {
+            foreach (string line in Log.ReadAll())
+                LogBox.AppendText(line + "\n");
         }
 
         private void SaveLog()
@@ -26,7 +33,10 @@ namespace RimeLibrarian
             {
                 string location = SetLocation();
                 if (location.Length > 0)
-                    try { Log.Save(location); }
+                    try
+                    {
+                        Log.Save(location);
+                    }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);

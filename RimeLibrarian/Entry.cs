@@ -2,9 +2,9 @@
 {
     internal class Entry
     {
-        public string Word = string.Empty;
-        public string Code = string.Empty;
-        public int Priority = 0;
+        public string Word { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public int Priority { get; set; } = 0;
 
         public Entry(string word, string code, string priority)
         {

@@ -6,6 +6,8 @@ namespace RimeLibrarian
     {
         private static readonly List<string> _log = new(0);
 
+        public static bool Any => _log.Any();
+
         public static void Add(string message) => _log.Add(message);
 
         public static void Clear() => _log.Clear();

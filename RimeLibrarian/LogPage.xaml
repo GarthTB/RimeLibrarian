@@ -10,8 +10,9 @@
     mc:Ignorable="d"
     FontSize="16"
     Icon="/logo.png"
-    Title="LogPage"
-    SizeToContent="WidthAndHeight">
+    Title="日志页"
+    SizeToContent="WidthAndHeight"
+    ResizeMode="CanMinimize">
     <Grid>
         <TextBox
             x:Name="LogBox"

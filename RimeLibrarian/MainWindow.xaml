@@ -22,7 +22,6 @@
         <TextBox
             x:Name="WordBox"
             Margin="76,18,10,258"
-            Width ="194"
             TextChanged="WordBox_TextChanged"
             TextWrapping="Wrap" />
         <ComboBox
@@ -31,7 +30,7 @@
             SelectionChanged="CodeCombo_SelectionChanged" />
         <Slider
             x:Name="CodeLengthSlider"
-            Margin="76,244,8,164"
+            Margin="76,242,8,164"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Value="4"
@@ -46,7 +45,7 @@
             ValueChanged="CodeLengthSlider_ValueChanged" />
         <TextBox
             x:Name="CodeBox"
-            Margin="114,291,10,119"
+            Margin="114,290,10,120"
             MaxLength="8"
             TextChanged="CodeBox_TextChanged"
             TextWrapping="Wrap" />
@@ -60,7 +59,7 @@
             TextWrapping="Wrap" />
         <TextBox
             x:Name="PriorityBox"
-            Margin="150,338,10,72"
+            Margin="150,337,10,73"
             IsEnabled="False"
             MaxLength="8"
             TextChanged="CodeBox_TextChanged"
@@ -69,10 +68,12 @@
             x:Name="ItemList"
             Grid.Column="1"
             Width="280"
+            Height="295"
             Margin="16,68,24,72"
             AutoGenerateColumns="False"
             Background="#FFF8F8F8"
-            SelectionMode="Single">
+            SelectionMode="Single"
+            IsReadOnly="True" SelectionChanged="ItemList_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="*"
@@ -90,9 +91,9 @@
         </DataGrid>
         <Label Margin="18,16,220,388" Content="字词" />
         <Label Margin="18,196,220,209" Content="编码" />
-        <Label Margin="18,242,220,162" Content="码长" />
-        <Label Margin="18,289,188,117" Content="手动编码" />
-        <Label Margin="18,336,145,70" Content="优先级（可选）" />
+        <Label Margin="18,240,220,162" Content="码长" />
+        <Label Margin="18,288,188,117" Content="手动编码" />
+        <Label Margin="18,334,145,70" Content="优先级（可选）" />
         <Label
             Grid.Column="1"
             Margin="12,18,234,384"
@@ -125,30 +126,25 @@
             Margin="16,384,244,21"
             Background="#FFF0F0F0"
             Content="删除"
-            IsEnabled="False" />
+            IsEnabled="False"
+            Click="ButtonDel_Click" />
         <Button
             x:Name="ButtonTop"
             Grid.Column="1"
             Height="30"
-            Margin="90,384,170,21"
+            Margin="126,384,134,21"
             Background="#FFF0F0F0"
             Content="置顶"
-            IsEnabled="False" />
+            IsEnabled="False"
+            Click="ButtonTop_Click" />
         <Button
             x:Name="ButtonMod"
             Grid.Column="1"
             Height="30"
-            Margin="162,384,98,21"
-            Background="#FFF0F0F0"
-            Content="修改"
-            IsEnabled="False" />
-        <Button
-            x:Name="ButtonYes"
-            Grid.Column="1"
-            Height="30"
             Margin="236,384,24,21"
             Background="#FFF0F0F0"
-            Content="确认"
-            IsEnabled="False" />
+            Content="修改"
+            IsEnabled="False"
+            Click="ButtonMod_Click" />
     </Grid>
 </Window>
