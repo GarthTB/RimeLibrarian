@@ -1,0 +1,49 @@
+﻿using Microsoft.Win32;
+using System.Windows;
+using System.Windows.Input;
+
+namespace RimeLibrarian
+{
+    public partial class LogPage : Window
+    {
+        public LogPage()
+        {
+            InitializeComponent();
+            KeyDown += new KeyEventHandler(HotKeys);
+        }
+
+        private void HotKeys(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F1)
+                SaveLog();
+        }
+
+        private void SaveLog()
+        {
+            if (LogBox.Text.Length == 0)
+                MessageBox.Show("没有记录到日志。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            else
+            {
+                string location = SetLocation();
+                if (location.Length > 0)
+                    try { Log.Save(location); }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+            }
+        }
+
+        private static string SetLocation()
+        {
+            SaveFileDialog sl = new()
+            {
+                DefaultExt = ".txt",
+                FileName = $"xkjd6.cizu.log({DateTime.Now:yyyy-MM-dd-HH-mm-ss}).txt",
+                Filter = "词库修改日志 (.txt)|*.txt",
+                Title = "日志将放在"
+            };
+            return sl.ShowDialog() == true ? sl.FileName : string.Empty;
+        }
+    }
+}
