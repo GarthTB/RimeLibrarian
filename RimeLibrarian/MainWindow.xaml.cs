@@ -95,23 +95,21 @@ namespace RimeLibrarian
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Log.Any)
+            if (!Log.Any) return;
+            try { Dict.Save(); }
+            catch (Exception ex)
             {
-                try { Dict.Save(); }
-                catch (Exception ex)
+                MessageBox.Show("保存新的词库失败，错误信息：" + ex.Message + "请另外选个地方存一下！", "糟了！", MessageBoxButton.OK, MessageBoxImage.Error);
+                SaveFileDialog sfd = new()
                 {
-                    MessageBox.Show("保存新的词库失败，错误信息：" + ex.Message + "请另外选个地方存一下！", "糟了！", MessageBoxButton.OK, MessageBoxImage.Error);
-                    SaveFileDialog sfd = new()
-                    {
-                        DefaultExt = ".txt",
-                        FileName = $"xkjd6.cizu.dict({DateTime.Now:yyyy-MM-dd-HH-mm-ss}).txt",
-                        Filter = "无法存储的词库 (.txt)|*.txt",
-                        Title = "词库将放在"
-                    };
-                    while (sfd.ShowDialog() != true)
-                        continue;
-                    Dict.Save(sfd.FileName);
-                }
+                    DefaultExt = ".txt",
+                    FileName = $"xkjd6.cizu.dict({DateTime.Now:yyyy-MM-dd-HH-mm-ss}).txt",
+                    Filter = "无法存储的词库 (.txt)|*.txt",
+                    Title = "词库将放在"
+                };
+                while (sfd.ShowDialog() != true)
+                    continue;
+                Dict.Save(sfd.FileName);
             }
         }
 
@@ -210,14 +208,14 @@ namespace RimeLibrarian
         {
             try
             {
-                int priority = GetPriority();
                 string code = CodeBox.Text.Length == 0
                     ? (string)CodeCombo.SelectedItem
                     : CodeBox.Text;
+                int priority = GetPriority();
                 Dict.Add(WordBox.Text, code, priority);
                 Log.Add($"添加\t{WordBox.Text}\t{code}\t{priority}");
-                WordBox.Text = string.Empty;
-                LoadResults();
+                WordBox.Text = string.Empty;//这里会把搜索框清空
+                SearchBox.Text = code;//这里会重新填入，相当于刷新
             }
             catch (Exception ex)
             {
@@ -229,11 +227,29 @@ namespace RimeLibrarian
 
         #region 其他功能（右边）
 
+        private HashSet<Entry> OriginItems = new();
+        private List<Entry> PresentItems = new();
+
         private void LoadResults()
         {
-            ItemList.ItemsSource = SearchBox.Text.Length > 0
-                ? Dict.AllStartsWith(SearchBox.Text).OrderBy(x => x.Code)
-                : null;
+            if (SearchBox.Text.Length > 0)
+            {
+                OriginItems = Dict.PrefixIs(SearchBox.Text)
+                                  .ToHashSet();
+                if (OriginItems.Count > 0)
+                {
+                    PresentItems = OriginItems.Select(e => e.Clone())
+                                              .OrderBy(x => x.Code)
+                                              .ToList();
+                    ItemList.ItemsSource = PresentItems;
+                    ButtonMod.IsEnabled = true;
+                    return;
+                }
+            }
+            OriginItems.Clear();
+            PresentItems.Clear();
+            ItemList.ItemsSource = null;
+            ButtonMod.IsEnabled = false;
         }
 
         private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -243,17 +259,21 @@ namespace RimeLibrarian
 
         private void ItemList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (ItemList.SelectedItem is null)
+            if (ItemList.SelectedItems.Count == 0)
             {
                 ButtonDel.IsEnabled = false;
-                ButtonMod.IsEnabled = false;
-                ButtonTop.IsEnabled = false;
+                ButtonCut.IsEnabled = false;
+            }
+            else if (ItemList.SelectedItems.Count == 1)
+            {
+                ButtonDel.IsEnabled = true;
+                ButtonCut.IsEnabled = ItemList.Items.Count > 1
+                                      && ((Entry)ItemList.SelectedItem).Code != SearchBox.Text;
             }
             else
             {
                 ButtonDel.IsEnabled = true;
-                ButtonMod.IsEnabled = true;
-                ButtonTop.IsEnabled = ItemList.Items.Count > 1 && ItemList.SelectedIndex != 0;
+                ButtonCut.IsEnabled = false;
             }
         }
 
@@ -261,9 +281,11 @@ namespace RimeLibrarian
         {
             try
             {
-                var item = (Entry)ItemList.SelectedItem;
-                Dict.Remove(item.Word, item.Code);
-                Log.Add($"删除\t{item.Word}\t{item.Code}\t{item.Priority}");
+                foreach (Entry item in ItemList.SelectedItems)
+                {
+                    Dict.Remove(item);
+                    Log.Add("删除", item);
+                }
                 LoadResults();
             }
             catch (Exception ex)
@@ -272,55 +294,63 @@ namespace RimeLibrarian
             }
         }
 
-        private void ButtonTop_Click(object sender, RoutedEventArgs e)
+        private void ButtonCut_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var shortItem = (Entry)ItemList.Items[0];
-                var longItem = (Entry)ItemList.SelectedItem;
-                Dict.Remove(shortItem.Word, shortItem.Code);
-                Dict.Remove(longItem.Word, longItem.Code);
-                Dict.Add(longItem.Word, shortItem.Code, longItem.Priority);
-                string lengthenCode = JD.Lengthen(shortItem.Word, shortItem.Code);
-                Dict.Add(shortItem.Word, lengthenCode, shortItem.Priority);
-                Log.Add($"置顶-原短\t{shortItem.Word}\t{shortItem.Code}\t{shortItem.Priority}");
-                Log.Add($"置顶-加长\t{shortItem.Word}\t{lengthenCode}\t{shortItem.Priority}");
-                Log.Add($"置顶-原长\t{longItem.Word}\t{longItem.Code}\t{longItem.Priority}");
+                var shortItem = PresentItems.Where(x => x.Code == SearchBox.Text).First();
+                var longItem = ((Entry)ItemList.SelectedItem).Clone();
+                Entry newShort = new(longItem.Word, shortItem.Code, longItem.Priority);
+                Entry newLong = new(shortItem.Word, JD.Lengthen(shortItem.Word, shortItem.Code), shortItem.Priority);
+                Dict.Remove(shortItem);
+                Dict.Remove(longItem);
+                Dict.Add(newShort);
+                Dict.Add(newLong);
+                Log.Add("截短-原短", shortItem);
+                Log.Add("截短-改为", newShort);
+                Log.Add("截短-原长", longItem);
+                Log.Add("截短-改为", newLong);
                 LoadResults();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("置顶失败：" + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("截短失败：" + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void ButtonMod_Click(object sender, RoutedEventArgs e)
         {
-            var item = (Entry)ItemList.SelectedItem;
-            ModPage mp = new(item.Word, item.Code, item.Priority);
             try
             {
-                mp.ShowDialog();
-                if (mp.Modified)
+                var newItems = PresentItems.Where(item => !OriginItems.Any(x => x.Equals(item)))
+                                           .Select(item => item.Clone())
+                                           .ToList();
+
+                if (!newItems.Any())
+                    throw new Exception("没有任何修改！");
+
+                var discards = OriginItems.Where(item => !PresentItems.Any(x => x.Equals(item)))
+                                          .Select(item => item.Clone())
+                                          .ToList();
+
+                if (newItems.Count != discards.Count)
+                    throw new Exception("修改前后数量不一致！");
+
+                foreach (Entry item in discards)
                 {
-                    Dict.Remove(item.Word, item.Code);
-                    Dict.Add(mp.Word, mp.Code, mp.Priority);
-                    Log.Add($"修改-原有\t{item.Word}\t{item.Code}\t{item.Priority}");
-                    Log.Add($"修改-改为\t{mp.Word}\t{mp.Code}\t{mp.Priority}");
-                    LoadResults();
+                    Dict.Remove(item);
+                    Log.Add("修改-原有", item);
                 }
-            }
-            catch (FormatException ex)
-            {
-                MessageBox.Show(ex.Message, "提示", MessageBoxButton.OK, MessageBoxImage.Warning);
-                if (mp.Modified)
+
+                foreach (Entry item in newItems)
                 {
-                    Dict.Remove(item.Word, item.Code);
-                    Dict.Add(mp.Word, mp.Code, mp.Priority);
-                    Log.Add($"修改-原有\t{item.Word}\t{item.Code}\t{item.Priority}");
-                    Log.Add($"修改-改为\t{mp.Word}\t{mp.Code}\t{mp.Priority}");
-                    LoadResults();
+                    Dict.Add(item);
+                    Log.Add("修改-改为", item);
                 }
+
+                MessageBox.Show($"修改成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                LoadResults();
             }
             catch (Exception ex)
             {

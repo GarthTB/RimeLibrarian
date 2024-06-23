@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Icon\logo.ico</ApplicationIcon>
     <Title>Rime词库管理器</Title>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Garth</Authors>
     <Copyright>©️ 2024 Garth</Copyright>
     <PackageIcon>logo.png</PackageIcon>

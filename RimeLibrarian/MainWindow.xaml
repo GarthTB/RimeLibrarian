@@ -72,19 +72,18 @@
             Margin="16,68,24,72"
             AutoGenerateColumns="False"
             Background="#FFF8F8F8"
-            SelectionMode="Single"
-            IsReadOnly="True" SelectionChanged="ItemList_SelectionChanged">
+            SelectionChanged="ItemList_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn
-                    Width="*"
+                    Width="4*"
                     Binding="{Binding Word}"
                     Header="字词" />
                 <DataGridTextColumn
-                    Width="*"
+                    Width="4*"
                     Binding="{Binding Code}"
                     Header="编码" />
                 <DataGridTextColumn
-                    Width="*"
+                    Width="3*"
                     Binding="{Binding Priority}"
                     Header="优先级" />
             </DataGrid.Columns>
@@ -107,10 +106,10 @@
             Content="重载" />
         <Button
             x:Name="ButtonLog"
-            Margin="102,384,89,21"
+            Margin="110,384,95,21"
             Background="#FFF0F0F0"
             Click="ButtonLog_Click"
-            Content="查看日志" />
+            Content="日志页" />
         <Button
             x:Name="ButtonAdd"
             Height="30"
@@ -125,26 +124,26 @@
             Height="30"
             Margin="16,384,244,21"
             Background="#FFF0F0F0"
+            Click="ButtonDel_Click"
             Content="删除"
-            IsEnabled="False"
-            Click="ButtonDel_Click" />
+            IsEnabled="False" />
         <Button
-            x:Name="ButtonTop"
+            x:Name="ButtonCut"
             Grid.Column="1"
             Height="30"
-            Margin="126,384,134,21"
+            Margin="108,384,152,21"
             Background="#FFF0F0F0"
-            Content="置顶"
-            IsEnabled="False"
-            Click="ButtonTop_Click" />
+            Click="ButtonCut_Click"
+            Content="截短"
+            IsEnabled="False" />
         <Button
             x:Name="ButtonMod"
             Grid.Column="1"
             Height="30"
-            Margin="236,384,24,21"
+            Margin="202,384,24,21"
             Background="#FFF0F0F0"
-            Content="修改"
-            IsEnabled="False"
-            Click="ButtonMod_Click" />
+            Click="ButtonMod_Click"
+            Content="应用修改"
+            IsEnabled="False" />
     </Grid>
 </Window>

@@ -10,6 +10,8 @@ namespace RimeLibrarian
 
         public static void Add(string message) => _log.Add(message);
 
+        public static void Add(string message, Entry entry) => _log.Add($"{message}\t{entry.Word}\t{entry.Code}\t{entry.Priority}");
+
         public static void Clear() => _log.Clear();
 
         public static IEnumerable<string> ReadAll() => _log;

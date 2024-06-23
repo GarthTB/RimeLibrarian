@@ -45,17 +45,25 @@ namespace RimeLibrarian
                 else sw.WriteLine($"{sd.Word}\t{sd.Code}\t{sd.Priority}");
         }
 
-        public static void Add(string word, string code, int priority = 0)
+        public static void Add(Entry entry)
         {
-            if (!_dict.Add(new Entry(word, code, priority)))
+            if (HasEntry(entry))
                 throw new Exception("词库中已存在该词条！");
+            _dict.Add(entry.Clone());
         }
 
-        public static void Remove(string word, string code)
+        public static void Add(string word, string code, int priority = 0)
         {
-            if (!HasEntry(word, code))
+            if (HasEntry(word, code, priority))
+                throw new Exception("词库中已存在该词条！");
+            _dict.Add(new Entry(word, code, priority));
+        }
+
+        public static void Remove(Entry entry)
+        {
+            if (!HasEntry(entry))
                 throw new Exception("词库中不存在该词条！");
-            _dict.RemoveWhere(e => e.Word == word && e.Code == code);
+            _dict.RemoveWhere(e => e.Equals(entry));
         }
 
         public static bool HasWord(string word)
@@ -68,9 +76,14 @@ namespace RimeLibrarian
             return _dict.Any(e => e.Code == code);
         }
 
-        public static bool HasEntry(string word, string code)
+        public static bool HasEntry(Entry entry)
         {
-            return _dict.Any(e => e.Word == word && e.Code == code);
+            return _dict.Any(e => e.Equals(entry));
+        }
+
+        public static bool HasEntry(string word, string code, int priority)
+        {
+            return _dict.Any(e => e.Word == word && e.Code == code && e.Priority == priority);
         }
 
         public static IEnumerable<string> WordsOf(string code)
@@ -85,9 +98,10 @@ namespace RimeLibrarian
             return codes.Any() ? codes : throw new Exception("词库中不存在该词！");
         }
 
-        public static IEnumerable<Entry> AllStartsWith(string prefix)
+        public static IEnumerable<Entry> PrefixIs(string prefix)
         {
-            return _dict.Where(e => e.Code.StartsWith(prefix));
+            return _dict.Where(e => e.Code.StartsWith(prefix))
+                        .Select(e => e.Clone());
         }
     }
 }

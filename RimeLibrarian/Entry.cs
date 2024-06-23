@@ -21,5 +21,9 @@
             Code = code;
             Priority = priority;
         }
+
+        public Entry Clone() => new(Word, Code, Priority);
+
+        public bool Equals(Entry other) => Word == other.Word && Code == other.Code && Priority == other.Priority;
     }
 }
