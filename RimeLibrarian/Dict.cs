@@ -40,9 +40,9 @@ namespace RimeLibrarian
                     sw.WriteLine(shit);
             var sortedDict = _dict.OrderBy(e => e.Code).ThenByDescending(e => e.Priority);
             foreach (var sd in sortedDict)
-                if (sd.Priority == 0)
-                    sw.WriteLine($"{sd.Word}\t{sd.Code}");
-                else sw.WriteLine($"{sd.Word}\t{sd.Code}\t{sd.Priority}");
+                sw.WriteLine(sd.Priority == 0
+                    ? $"{sd.Word}\t{sd.Code}"
+                    : $"{sd.Word}\t{sd.Code}\t{sd.Priority}");
         }
 
         public static void Add(Entry entry)
@@ -50,13 +50,6 @@ namespace RimeLibrarian
             if (HasEntry(entry))
                 throw new Exception("词库中已存在该词条！");
             _dict.Add(entry.Clone());
-        }
-
-        public static void Add(string word, string code, int priority = 0)
-        {
-            if (HasEntry(word, code, priority))
-                throw new Exception("词库中已存在该词条！");
-            _dict.Add(new Entry(word, code, priority));
         }
 
         public static void Remove(Entry entry)
@@ -79,11 +72,6 @@ namespace RimeLibrarian
         public static bool HasEntry(Entry entry)
         {
             return _dict.Any(e => e.Equals(entry));
-        }
-
-        public static bool HasEntry(string word, string code, int priority)
-        {
-            return _dict.Any(e => e.Word == word && e.Code == code && e.Priority == priority);
         }
 
         public static IEnumerable<string> WordsOf(string code)

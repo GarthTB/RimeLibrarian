@@ -21,7 +21,7 @@ namespace RimeLibrarian
                             + "\n快捷键：\n"
                             + "主页按F1跳出帮助。\n"
                             + "日志页按F1保存日志。\n"
-                            + "\n词器清单版v0.2，一个用于维护Rime星空键道6输入法词库的Windows工具。\n"
+                            + "\n词器清单版v0.3，一个用于维护Rime星空键道6输入法词库的Windows工具。\n"
                             + "源码链接已复制到剪贴板。\n"
                             + "©️ 2024 Garth", "帮助", MessageBoxButton.OK);
         }

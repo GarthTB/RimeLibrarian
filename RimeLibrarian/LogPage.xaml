@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:RimeLibrarian"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="375"
+    Width="420"
     Height="450"
     mc:Ignorable="d"
     FontSize="16"
@@ -16,7 +16,7 @@
     <Grid>
         <TextBox
             x:Name="LogBox"
-            Width="375"
+            Width="420"
             Height="435"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"

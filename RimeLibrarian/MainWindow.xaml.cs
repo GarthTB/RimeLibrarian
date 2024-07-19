@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace RimeLibrarian
 {
@@ -123,9 +125,8 @@ namespace RimeLibrarian
 
         #region 加词（左边）
 
-        private HashSet<string> FullCodes = new();
-        private List<string> CurrentCodes = new();
-        private int length = 4;
+        private HashSet<char[]> FullCodes = new();
+        private int codeLength = 4;
 
         private void RefreshButton()
         {
@@ -133,26 +134,40 @@ namespace RimeLibrarian
                                                           || (WordBox.Text.Length > 0 && CodeBox.Text.Length > 0);
         }
 
+        private void SelectItem(string preText, IEnumerable<string> items)
+        {
+            if (!string.IsNullOrEmpty(preText))
+            {
+                var itemToChoose = items.FirstOrDefault(x => x.StartsWith(preText) || preText.StartsWith(x));
+                CodeCombo.Text = itemToChoose ?? items.FirstOrDefault();
+            }
+            else CodeCombo.SelectedIndex = 0;
+        }
+
         private void LoadAutoWords()
         {
-            CurrentCodes = FullCodes.Select(x => x[..length])
-                                    .Distinct()
-                                    .OrderBy(x => x)
-                                    .ToList();
-            CodeCombo.ItemsSource = CurrentCodes;
-            CodeCombo.SelectedIndex = 0;
+            var preText = string.IsNullOrWhiteSpace(CodeCombo.Text)
+                ? string.Empty
+                : CodeCombo.Text;
+            var presentCodes = FullCodes.Select(x => new string(x[..codeLength]))
+                                        .Distinct()
+                                        .OrderBy(x => x);
+            CodeCombo.ItemsSource = presentCodes;
+            CodeCombo.Foreground = CodeCombo.Items.Count > 1
+                ? Brushes.IndianRed
+                : Brushes.Black;
+            SelectItem(preText, presentCodes);
         }
 
         private void UnloadAutoWords()
         {
-            CurrentCodes.Clear();
             CodeCombo.ItemsSource = null;
         }
 
-        private void WordBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void WordBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (WordBox.Text.Length > 1
-                && JD.Encode(WordBox.Text, out IEnumerable<string>? codes)
+                && JD.Encode(WordBox.Text, out IEnumerable<char[]>? codes)
                 && codes is not null)
             {
                 CodeBox.Text = string.Empty;
@@ -167,7 +182,7 @@ namespace RimeLibrarian
             RefreshButton();
         }
 
-        private void CodeCombo_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void CodeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SearchBox.Text = CodeCombo.SelectedItem is null
                 ? string.Empty
@@ -176,14 +191,19 @@ namespace RimeLibrarian
 
         private void CodeLengthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
+            codeLength = (int)CodeLengthSlider.Value;
             if (CodeCombo.ItemsSource is not null)
-            {
-                length = (int)CodeLengthSlider.Value;
                 LoadAutoWords();
-            }
         }
 
-        private void CodeBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void CodeLengthSlider_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is Slider slider)
+                if (e.Delta > 0) slider.Value++;
+                else slider.Value--;
+        }
+
+        private void CodeBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             SearchBox.Text = CodeBox.Text;
             if (CodeBox.Text.Length > 0)
@@ -211,9 +231,9 @@ namespace RimeLibrarian
                 string code = CodeBox.Text.Length == 0
                     ? (string)CodeCombo.SelectedItem
                     : CodeBox.Text;
-                int priority = GetPriority();
-                Dict.Add(WordBox.Text, code, priority);
-                Log.Add($"添加\t{WordBox.Text}\t{code}\t{priority}");
+                Entry newItem = new(WordBox.Text, code, GetPriority());
+                Dict.Add(newItem);
+                Log.Add("添加", newItem);
                 WordBox.Text = string.Empty;//这里会把搜索框清空
                 SearchBox.Text = code;//这里会重新填入，相当于刷新
             }
@@ -252,12 +272,12 @@ namespace RimeLibrarian
             ButtonMod.IsEnabled = false;
         }
 
-        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             LoadResults();
         }
 
-        private void ItemList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void ItemList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ItemList.SelectedItems.Count == 0)
             {
@@ -302,6 +322,8 @@ namespace RimeLibrarian
                 var longItem = ((Entry)ItemList.SelectedItem).Clone();
                 Entry newShort = new(longItem.Word, shortItem.Code, longItem.Priority);
                 Entry newLong = new(shortItem.Word, JD.Lengthen(shortItem.Word, shortItem.Code), shortItem.Priority);
+                if (newLong.Code.StartsWith(longItem.Code))
+                    newLong.Code = longItem.Code;//正好可以互换码位
                 Dict.Remove(shortItem);
                 Dict.Remove(longItem);
                 Dict.Add(newShort);

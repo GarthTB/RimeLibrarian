@@ -32,15 +32,17 @@ namespace RimeLibrarian
             else
             {
                 string location = SetLocation();
-                if (location.Length > 0)
-                    try
-                    {
-                        Log.Save(location);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                if (location.Length == 0)
+                    return;
+                try
+                {
+                    Log.Save(location);
+                    MessageBox.Show("日志已保存。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
