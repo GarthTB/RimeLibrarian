@@ -29,7 +29,11 @@
 
         private static IEnumerable<char[]> CodesOf(string word)
         {
-            List<IEnumerable<string>> codesOfChar = word.Select(c => Dan.FullCodesOf(c)).ToList();
+            var codesOfChar = word.Select(c => Dan.FullCodesOf(c)
+                                                  .Select(s => s[..3])
+                                                  .Distinct()
+                                                  .ToArray())
+                                  .ToArray();
             return word.Length switch
             {
                 2 => from c1 in codesOfChar[0]//第一个字的所有编码

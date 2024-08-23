@@ -9,10 +9,10 @@
     Height="450"
     mc:Ignorable="d"
     FontSize="16"
-    Icon="/logo.png"
-    Title="日志页"
+    KeyDown="Window_KeyDown"
+    ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"
-    ResizeMode="CanMinimize">
+    Title="日志页">
     <Grid>
         <TextBox
             x:Name="LogBox"
@@ -21,6 +21,6 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             IsReadOnly="True"
-            TextWrapping="Wrap"/>
+            TextWrapping="Wrap" />
     </Grid>
 </Window>

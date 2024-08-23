@@ -9,11 +9,10 @@ namespace RimeLibrarian
         public LogPage()
         {
             InitializeComponent();
-            KeyUp += new KeyEventHandler(HotKeys);
             ShowLog();
         }
 
-        private void HotKeys(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F1)
                 SaveLog();

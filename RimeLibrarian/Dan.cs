@@ -19,7 +19,7 @@ namespace RimeLibrarian
                 else if (parts.Length == 3)
                     _dict.Add(new Entry(parts[0], parts[1], parts[2]));
             }
-            if (!_dict.Any())
+            if (_dict.Count == 0)
                 throw new Exception("单字文件为空！");
         }
 

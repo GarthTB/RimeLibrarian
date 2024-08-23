@@ -9,13 +9,9 @@ namespace RimeLibrarian
 {
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-            KeyDown += new KeyEventHandler(HotKeys);
-        }
+        public MainWindow() => InitializeComponent();
 
-        private void HotKeys(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F1)
                 Help.Show();
@@ -159,10 +155,7 @@ namespace RimeLibrarian
             SelectItem(preText, presentCodes);
         }
 
-        private void UnloadAutoWords()
-        {
-            CodeCombo.ItemsSource = null;
-        }
+        private void UnloadAutoWords() => CodeCombo.ItemsSource = null;
 
         private void WordBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -348,7 +341,7 @@ namespace RimeLibrarian
                                            .Select(item => item.Clone())
                                            .ToList();
 
-                if (!newItems.Any())
+                if (newItems.Count == 0)
                     throw new Exception("没有任何修改！");
 
                 var discards = OriginItems.Where(item => !PresentItems.Any(x => x.Equals(item)))

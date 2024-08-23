@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Closing="Window_Closing"
     FontSize="16"
-    Icon="/logo.png"
+    KeyDown="Window_KeyDown"
     Loaded="Window_Loaded"
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight"

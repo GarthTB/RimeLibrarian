@@ -25,7 +25,7 @@ namespace RimeLibrarian
                     _dict.Add(new Entry(parts[0], parts[1], parts[2]));
                 else _shit.Add(line);
             }
-            if (!_dict.Any())
+            if (_dict.Count == 0)
                 throw new Exception("词库文件为空！");
             _path = path;
         }
@@ -35,7 +35,7 @@ namespace RimeLibrarian
             if (_path.Length == 0) return;
             path ??= _path;
             using StreamWriter sw = new(path, false, System.Text.Encoding.UTF8);
-            if (_shit.Any())
+            if (_shit.Count > 0)
                 foreach (var shit in _shit)
                     sw.WriteLine(shit);
             var sortedDict = _dict.OrderBy(e => e.Code).ThenByDescending(e => e.Priority);
