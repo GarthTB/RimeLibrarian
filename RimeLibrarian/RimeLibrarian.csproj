@@ -12,8 +12,8 @@
     <Title>Rime词库管理器</Title>
     <Authors>Garth</Authors>
     <Company>Garth</Company>
-    <Version>0.3.1</Version>
-    <Copyright>Copyright (c) 2024 Garth. All rights reserved.</Copyright>
+    <Version>0.4.0</Version>
+    <Copyright>© Garth 2024</Copyright>
     <Description>词器清单版——一个用于维护Rime星空键道6输入法词库的Windows工具</Description>
     <RepositoryUrl>https://github.com/GarthTB/RimeLibrarian</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>

@@ -55,7 +55,8 @@
             IsEnabled="False"
             MaxLength="8"
             TextChanged="CodeBox_TextChanged"
-            TextWrapping="Wrap" />
+            TextWrapping="Wrap"
+            ToolTip="不填或填0，则不记录到词库中" />
         <TextBox
             x:Name="SearchBox"
             Grid.Column="1"

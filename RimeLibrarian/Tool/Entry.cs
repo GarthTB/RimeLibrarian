@@ -1,7 +1,8 @@
-﻿namespace RimeLibrarian
+﻿namespace RimeLibrarian.Tool
 {
     internal class Entry
     {
+        // 这里不能用字段，因为字段把显示在ItemList里
         public string Word { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public int Priority { get; set; } = 0;
@@ -24,6 +25,9 @@
 
         public Entry Clone() => new(Word, Code, Priority);
 
-        public bool Equals(Entry other) => Word == other.Word && Code == other.Code && Priority == other.Priority;
+        public bool Equals(Entry other)
+            => Word == other.Word
+               && Code == other.Code
+               && Priority == other.Priority;
     }
 }

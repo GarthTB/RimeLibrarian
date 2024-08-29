@@ -1,12 +1,14 @@
-﻿using System.IO;
+﻿using RimeLibrarian.Tool;
+using System.IO;
+using System.Text;
 
-namespace RimeLibrarian
+namespace RimeLibrarian.Logger
 {
     internal static class Log
     {
         private static readonly List<string> _log = new(0);
 
-        public static bool Any => _log.Count > 0;
+        public static bool IsEmpty => _log.Count == 0;
 
         public static void Add(string message, Entry entry)
         {
@@ -21,11 +23,13 @@ namespace RimeLibrarian
 
         public static void Save(string path)
         {
-            using StreamWriter sw = new(path, false, System.Text.Encoding.UTF8);
             if (_log.Count == 0)
                 throw new InvalidOperationException("没有记录到日志。");
+
+            using StreamWriter sw = new(path, false, Encoding.UTF8);
             foreach (var log in _log)
                 sw.WriteLine(log);
+            MsgB.OkInfo("日志已保存。", "提示");
         }
     }
 }
