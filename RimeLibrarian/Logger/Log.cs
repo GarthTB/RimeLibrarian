@@ -26,6 +26,9 @@ namespace RimeLibrarian.Logger
             if (_log.Count == 0)
                 throw new InvalidOperationException("没有记录到日志。");
 
+            if (File.Exists(path))
+                throw new InvalidOperationException("同名文件已存在。");
+
             using StreamWriter sw = new(path, false, Encoding.UTF8);
             foreach (var log in _log)
                 sw.WriteLine(log);

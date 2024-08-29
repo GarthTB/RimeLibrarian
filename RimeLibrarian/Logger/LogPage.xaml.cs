@@ -31,7 +31,7 @@ namespace RimeLibrarian
             SaveFileDialog sfd = new()
             {
                 DefaultExt = ".txt",
-                FileName = $"xkjd6.cizu.log({DateTime.Now:yyyy-MM-dd HH:mm:ss}).txt",
+                FileName = $"xkjd6.cizu.log({DateTime.Now:yyyy-MM-dd HH-mm-ss}).txt",
                 Filter = "词库修改日志 (.txt)|*.txt",
                 Title = "日志将放在"
             };

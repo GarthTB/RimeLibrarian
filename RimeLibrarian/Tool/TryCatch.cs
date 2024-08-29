@@ -17,17 +17,17 @@
             }
         }
 
-        public static void Do(string name, Action action, out bool result)
+        public static void Do(string name, Action action, out bool success)
         {
             try
             {
                 action();
-                result = true;
+                success = true;
             }
             catch (Exception ex)
             {
                 MsgB.OkErr($"{name}错误：\n{ex.Message}", "错误");
-                result = false;
+                success = false;
             }
         }
 
