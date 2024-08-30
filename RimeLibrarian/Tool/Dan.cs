@@ -16,26 +16,30 @@ namespace RimeLibrarian.Tool
             {
                 var parts = line.Split('\t');
                 if (parts.Length == 2)
-                    _ = _dict.Add(new Entry(parts[0], parts[1]));
+                {
+                    if (!_dict.Add(new Entry(parts[0], parts[1])))
+                        throw new Exception($"无法读取单字文件中的：{parts[0]} {parts[1]}");
+                }
                 else if (parts.Length == 3)
-                    _ = _dict.Add(new Entry(parts[0], parts[1], parts[2]));
+                {
+                    if (!_dict.Add(new Entry(parts[0], parts[1], parts[2])))
+                        throw new Exception($"无法读取单字文件中的：{parts[0]} {parts[1]} {parts[2]}");
+                }
             }
             if (_dict.Count == 0)
                 throw new Exception("单字文件为空！");
         }
 
         public static bool Contains(char dan)
-        {
-            var value = dan.ToString();
-            return _dict.Any(e => e.Word == dan.ToString());
-        }
+            => _dict.Any(e => e.Word == dan.ToString());
 
         /// <summary>
         /// 某个字的前3码
         /// </summary>
         public static IEnumerable<string> KeyCodesOf(char dan)
         {
-            var codes = _dict.Where(e => e.Word == dan.ToString()
+            var codes = _dict.AsParallel()
+                             .Where(e => e.Word == dan.ToString()
                                          && e.Code.Length > 3)
                              .Select(e => e.Code[..3])
                              .Distinct();

@@ -23,8 +23,9 @@ namespace RimeLibrarian.Tool
                 }
 
                 MsgB.OkWarn("未能自动载入Rime键道词库。\n请手动选择词库。", "提示");
-                while (Dict.IsEmpty)
-                    _ = LoadLib();
+                bool success = false;
+                while (!success)
+                    success = LoadLib();
 
                 MsgB.OkInfo($"已载入指定位置的词库，如需修改请手动重载。", "提示");
             });
@@ -51,6 +52,7 @@ namespace RimeLibrarian.Tool
                     Dict.Load(wordLocation);
                     Dan.Load(danLocation);
                 }, out bool success);
+
                 return success;
             }
             return false;

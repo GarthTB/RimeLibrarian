@@ -27,6 +27,7 @@ namespace RimeLibrarian
         {
             if (Files.LoadLib())
             {
+                MsgB.OkInfo("词库载入成功！", "提示");
                 WordBox.Clear();
                 CodeBox.Clear();
                 PriorityBox.Clear();
@@ -91,12 +92,17 @@ namespace RimeLibrarian
 
         private void WordBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (WordBox.Text.Length > 1
-                && JD.Encode(WordBox.Text, out char[][] codes))
+            if (WordBox.Text.Length > 1)
             {
-                CodeBox.Clear();
-                FullCodes = codes.ToHashSet();
-                LoadAutoWords();
+                WordBox.Foreground = Dict.HasWord(WordBox.Text)
+                    ? Brushes.IndianRed
+                    : Brushes.Black;
+                if (JD.Encode(WordBox.Text, out char[][] codes))
+                {
+                    CodeBox.Clear();
+                    FullCodes = codes.ToHashSet();
+                    LoadAutoWords();
+                }
             }
             else
             {

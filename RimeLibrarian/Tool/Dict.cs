@@ -10,8 +10,6 @@ namespace RimeLibrarian.Tool
         private static readonly HashSet<Entry> _dict = new(0);
         private static string _path = string.Empty;
 
-        public static bool IsEmpty => _dict.Count == 0;
-
         public static void Load(string path)
         {
             _shit.Clear();
@@ -22,9 +20,15 @@ namespace RimeLibrarian.Tool
             {
                 var parts = line.Split('\t');
                 if (parts.Length == 2)
-                    _ = _dict.Add(new Entry(parts[0], parts[1]));
+                {
+                    if (!_dict.Add(new Entry(parts[0], parts[1])))
+                        throw new Exception($"无法读取词组文件中的：{parts[0]} {parts[1]}");
+                }
                 else if (parts.Length == 3)
-                    _ = _dict.Add(new Entry(parts[0], parts[1], parts[2]));
+                {
+                    if (!_dict.Add(new Entry(parts[0], parts[1], parts[2])))
+                        throw new Exception($"无法读取词组文件中的：{parts[0]} {parts[1]} {parts[2]}");
+                }
                 else _shit.Add(line);
             }
             if (_dict.Count == 0)
@@ -53,7 +57,8 @@ namespace RimeLibrarian.Tool
         {
             if (HasEntry(entry))
                 throw new Exception("词库中已存在该词条！");
-            _ = _dict.Add(entry.Clone());
+            if (!_dict.Add(entry.Clone()))
+                throw new Exception($"无法添加词条：{entry.Word} {entry.Code} {entry.Priority}");
             Log.Add("添加", entry);
         }
 
@@ -65,9 +70,8 @@ namespace RimeLibrarian.Tool
 
         public static void Remove(Entry entry)
         {
-            if (!HasEntry(entry))
+            if (_dict.RemoveWhere(e => e.Equals(entry)) < 1)
                 throw new Exception("词库中不存在该词条！");
-            _ = _dict.RemoveWhere(e => e.Equals(entry));
             Log.Add("删除", entry);
         }
 
@@ -86,26 +90,9 @@ namespace RimeLibrarian.Tool
         public static bool HasEntry(Entry entry)
             => _dict.Any(e => e.Equals(entry));
 
-        public static IEnumerable<string> WordsOf(string code)
-        {
-            var words = _dict.Where(e => e.Code == code)
-                             .Select(e => e.Word);
-            return words.Any()
-                ? words
-                : throw new Exception("词库中不存在该编码！");
-        }
-
-        public static IEnumerable<string> CodesOf(string word)
-        {
-            var codes = _dict.Where(e => e.Word == word)
-                             .Select(e => e.Code);
-            return codes.Any()
-                ? codes
-                : throw new Exception("词库中不存在该词！");
-        }
-
         public static IEnumerable<Entry> PrefixIs(string prefix)
-            => _dict.Where(e => e.Code.StartsWith(prefix))
+            => _dict.AsParallel()
+                    .Where(e => e.Code.StartsWith(prefix))
                     .Select(e => e.Clone());
     }
 }

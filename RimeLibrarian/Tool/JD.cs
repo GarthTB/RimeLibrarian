@@ -74,8 +74,10 @@ namespace RimeLibrarian.Tool
                               .Distinct()
                               .ToArray();
 
-            if (_codes.Length != 1)
-                throw new Exception("加长方式不唯一，或找不到其中某个单字的全码！");
+            if (_codes.Length == 0)
+                throw new Exception("短码和自动编码不匹配！");
+            if (_codes.Length > 1)
+                throw new Exception("短码加长方式不唯一！");
 
             var result = _codes[0];
 
