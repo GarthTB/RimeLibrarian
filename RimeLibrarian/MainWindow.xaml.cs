@@ -52,8 +52,8 @@ namespace RimeLibrarian
 
         #region 加词（左边）
 
-        private HashSet<char[]> FullCodes = new();
-        private int codeLength = 4;
+        private static HashSet<char[]> FullCodes = new();
+        private static int codeLength = 4;
 
         private void RefreshButton()
         {
@@ -149,7 +149,7 @@ namespace RimeLibrarian
         private int GetPriority()
         {
             if (int.TryParse(PriorityBox.Text, out int priority)
-                && priority > 0)
+                && priority >= 0)
                 return priority;
             else MsgB.OkWarn("优先级无法识别，已忽略！", "提示");
             return 0;

@@ -5,7 +5,7 @@ namespace RimeLibrarian.Tool
 {
     internal static class Help
     {
-        private static readonly string version = "0.4.2";
+        private static readonly string version = "0.4.3";
 
         public static void Show()
         {
