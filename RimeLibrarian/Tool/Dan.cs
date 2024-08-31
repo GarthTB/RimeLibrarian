@@ -36,16 +36,20 @@ namespace RimeLibrarian.Tool
         /// <summary>
         /// 某个字的前3码
         /// </summary>
-        public static IEnumerable<string> KeyCodesOf(char dan)
+        public static char[][][] GetKeyCodes(string word)
         {
-            var codes = _dict.AsParallel()
-                             .Where(e => e.Word == dan.ToString()
-                                         && e.Code.Length > 3)
-                             .Select(e => e.Code[..3])
-                             .Distinct();
-            return codes.Any()
-                ? codes
-                : throw new Exception($"单字中找不到“{dan}”字！");
+            var result = new char[word.Length][][];
+            for (int i = 0; i < word.Length; i++)
+            {
+                var c = word[i];
+                result[i] = _dict.Where(e => e.Word == c.ToString() && e.Code.Length > 3)
+                                 .Select(e => e.Code.ToCharArray(0, 3))
+                                 .Distinct()
+                                 .ToArray();
+                if (result[i].Length == 0)
+                    throw new Exception($"单字中找不到“{c}”字！");
+            }
+            return result;
         }
     }
 }

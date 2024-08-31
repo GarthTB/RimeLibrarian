@@ -19,7 +19,13 @@ namespace RimeLibrarian.Logger
 
         public static void Clear() => _log.Clear();
 
-        public static IEnumerable<string> ReadAll() => _log;
+        public static string ReadAll()
+        {
+            var sb = new StringBuilder();
+            foreach (var log in _log)
+                _ = sb.AppendLine(log);
+            return sb.ToString();
+        }
 
         public static void Save(string path)
         {
@@ -27,11 +33,12 @@ namespace RimeLibrarian.Logger
                 throw new InvalidOperationException("没有记录到日志。");
 
             if (File.Exists(path))
-                throw new InvalidOperationException("同名文件已存在。");
+                MsgB.OkInfo("同名文件已存在，将续写。", "提示");
 
-            using StreamWriter sw = new(path, false, Encoding.UTF8);
+            using StreamWriter sw = new(path, true, Encoding.UTF8);
             foreach (var log in _log)
                 sw.WriteLine(log);
+
             MsgB.OkInfo("日志已保存。", "提示");
         }
     }

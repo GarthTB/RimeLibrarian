@@ -171,27 +171,25 @@ namespace RimeLibrarian
 
         #region 其他功能（右边）
 
-        private HashSet<Entry> OriginItems = new();
-        private List<Entry> PresentItems = new();
+        private static HashSet<Entry> OriginItems = new();
+        private static Entry[] PresentItems = Array.Empty<Entry>();
 
         private void LoadResults()
         {
             if (SearchBox.Text.Length > 0)
             {
-                OriginItems = Dict.PrefixIs(SearchBox.Text)
-                                  .ToHashSet();
+                OriginItems = Dict.PrefixIs(SearchBox.Text);
                 if (OriginItems.Count > 0)
                 {
                     PresentItems = OriginItems.Select(e => e.Clone())
                                               .OrderBy(x => x.Code)
-                                              .ToList();
+                                              .ToArray();
                     ItemList.ItemsSource = PresentItems;
                     ButtonMod.IsEnabled = true;
                     return;
                 }
             }
             OriginItems.Clear();
-            PresentItems.Clear();
             ItemList.ItemsSource = null;
             ButtonMod.IsEnabled = false;
         }
@@ -209,8 +207,8 @@ namespace RimeLibrarian
             else if (ItemList.SelectedItems.Count == 1)
             {
                 ButtonDel.IsEnabled = true;
-                ButtonCut.IsEnabled = ItemList.Items.Count > 1
-                                      && ((Entry)ItemList.SelectedItem).Code != SearchBox.Text;
+                ButtonCut.IsEnabled = PresentItems.Length > 1
+                                      && ItemList.SelectedIndex != 0;
             }
             else
             {
@@ -220,13 +218,16 @@ namespace RimeLibrarian
         }
 
         private void ButtonDel_Click(object sender, RoutedEventArgs e)
-            => TryCatch.Do("删除词条", ()
-                => Dict.RemoveAll(ItemList.SelectedItems.Cast<Entry>()));
+            => TryCatch.Do("删除词条", () =>
+            {
+                Dict.RemoveAll(ItemList.SelectedItems.Cast<Entry>().ToArray());
+                LoadResults();
+            });
 
         private void ButtonCut_Click(object sender, RoutedEventArgs e)
             => TryCatch.Do("截短长词", () =>
             {
-                var shortItem = PresentItems.Where(x => x.Code == SearchBox.Text).First();
+                var shortItem = PresentItems.First(x => x.Code == SearchBox.Text);
                 var longItem = ((Entry)ItemList.SelectedItem).Clone();
                 Entry newShort = new(longItem.Word, shortItem.Code, longItem.Priority);
                 Entry newLong = new(shortItem.Word, JD.Lengthen(shortItem.Word, shortItem.Code), shortItem.Priority);
@@ -244,16 +245,16 @@ namespace RimeLibrarian
             {
                 var newItems = PresentItems.Where(item => !OriginItems.Any(x => x.Equals(item)))
                                            .Select(item => item.Clone())
-                                           .ToList();
+                                           .ToArray();
 
-                if (newItems.Count == 0)
+                if (newItems.Length == 0)
                     throw new Exception("没有任何修改！");
 
                 var discards = OriginItems.Where(item => !PresentItems.Any(x => x.Equals(item)))
                                           .Select(item => item.Clone())
-                                          .ToList();
+                                          .ToArray();
 
-                if (newItems.Count != discards.Count)
+                if (newItems.Length != discards.Length)
                     throw new Exception("修改前后数量不一致！这是不该出现的错误，如果出现请联系开发者。");
 
                 Dict.RemoveAll(discards);

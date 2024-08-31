@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace RimeLibrarian.Tool
+﻿namespace RimeLibrarian.Tool
 {
     internal class JD
     {
@@ -26,40 +24,32 @@ namespace RimeLibrarian.Tool
 
         private static char[][] CodesOf(string word)
         {
-            var codesOfChar = word.Select(c => Dan.KeyCodesOf(c).ToArray())
-                                  .ToArray();
-
-            var codes = new ConcurrentBag<char[]>();
-            var tasks = new List<Task>();
+            var codesOfChar = Dan.GetKeyCodes(word);
+            var codes = new List<char[]>();
 
             switch (word.Length)
             {
                 case 2:
-                    tasks.AddRange(codesOfChar[0].SelectMany(
-                             c1 => codesOfChar[1].Select(
-                             c2 => Task.Run(()
-                                => codes.Add(new[] { c1[0], c1[1], c2[0], c2[1], c1[2], c2[2] })))));
+                    foreach (var c1 in codesOfChar[0])
+                        foreach (var c2 in codesOfChar[1])
+                            codes.Add(new[] { c1[0], c1[1], c2[0], c2[1], c1[2], c2[2] });
                     break;
 
                 case 3:
-                    tasks.AddRange(codesOfChar[0].SelectMany(
-                             c1 => codesOfChar[1].SelectMany(
-                             c2 => codesOfChar[2].Select(
-                             c3 => Task.Run(()
-                                => codes.Add(new[] { c1[0], c2[0], c3[0], c1[2], c2[2], c3[2] }))))));
+                    foreach (var c1 in codesOfChar[0])
+                        foreach (var c2 in codesOfChar[1])
+                            foreach (var c3 in codesOfChar[2])
+                                codes.Add(new[] { c1[0], c2[0], c3[0], c1[2], c2[2], c3[2] });
                     break;
 
                 default:
-                    tasks.AddRange(codesOfChar[0].SelectMany(
-                             c1 => codesOfChar[1].SelectMany(
-                             c2 => codesOfChar[2].SelectMany(
-                             c3 => codesOfChar[3].Select(
-                             c4 => Task.Run(()
-                                => codes.Add(new[] { c1[0], c2[0], c3[0], c4[0], c1[2], c2[2] })))))));
+                    foreach (var c1 in codesOfChar[0])
+                        foreach (var c2 in codesOfChar[1])
+                            foreach (var c3 in codesOfChar[2])
+                                foreach (var c4 in codesOfChar[3])
+                                    codes.Add(new[] { c1[0], c2[0], c3[0], c4[0], c1[2], c2[2] });
                     break;
             }
-
-            Task.WhenAll(tasks).Wait();
 
             return codes.ToArray();
         }

@@ -20,11 +20,7 @@ namespace RimeLibrarian
                 SaveLog();
         }
 
-        private void ShowLog()
-        {
-            foreach (string line in Log.ReadAll())
-                LogBox.AppendText(line + "\n");
-        }
+        private void ShowLog() => LogBox.Text = Log.ReadAll();
 
         private static void SaveLog()
         {

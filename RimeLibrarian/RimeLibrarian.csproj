@@ -12,7 +12,7 @@
     <Title>Rime词库管理器</Title>
     <Authors>Garth</Authors>
     <Company>Garth</Company>
-    <Version>0.4.1</Version>
+    <Version>0.4.2</Version>
     <Copyright>© Garth 2024</Copyright>
     <Description>词器清单版——一个用于维护Rime星空键道6输入法词库的Windows工具</Description>
     <RepositoryUrl>https://github.com/GarthTB/RimeLibrarian</RepositoryUrl>

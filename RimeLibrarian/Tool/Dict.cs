@@ -62,7 +62,7 @@ namespace RimeLibrarian.Tool
             Log.Add("添加", entry);
         }
 
-        public static void AddAll(IEnumerable<Entry> entries)
+        public static void AddAll(Entry[] entries)
         {
             foreach (var entry in entries)
                 Add(entry);
@@ -75,7 +75,7 @@ namespace RimeLibrarian.Tool
             Log.Add("删除", entry);
         }
 
-        public static void RemoveAll(IEnumerable<Entry> entries)
+        public static void RemoveAll(Entry[] entries)
         {
             foreach (var entry in entries)
                 Remove(entry);
@@ -90,9 +90,10 @@ namespace RimeLibrarian.Tool
         public static bool HasEntry(Entry entry)
             => _dict.Any(e => e.Equals(entry));
 
-        public static IEnumerable<Entry> PrefixIs(string prefix)
+        public static HashSet<Entry> PrefixIs(string prefix)
             => _dict.AsParallel()
                     .Where(e => e.Code.StartsWith(prefix))
-                    .Select(e => e.Clone());
+                    .Select(e => e.Clone())
+                    .ToHashSet();
     }
 }
