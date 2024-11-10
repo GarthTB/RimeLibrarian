@@ -148,10 +148,10 @@ namespace RimeLibrarian
 
         private int GetPriority()
         {
-            if (int.TryParse(PriorityBox.Text, out int priority)
-                && priority >= 0)
-                return priority;
-            else MsgB.OkWarn("优先级无法识别，已忽略！", "提示");
+            if (PriorityBox.Text.Length > 0)
+                if (int.TryParse(PriorityBox.Text, out int priority) && priority >= 0)
+                    return priority;
+                else MsgB.OkWarn("优先级无法识别，已忽略！", "提示");
             return 0;
         }
 

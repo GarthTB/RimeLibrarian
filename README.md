@@ -2,10 +2,6 @@
 
 一个用于维护Rime版星空键道6输入法词库的Windows工具
 
-此工具是原版[词器](https://github.com/GarthTB/JDLibManager)的衍生版，所有功能集中在单个页面，砍掉了风险检查，流程更加通顺，一目了然。
-
-同时，代码也比原版更加整洁且易于维护，所以后续基本不会再更新原版词器。
-
 ## 环境依赖
 
 - [.NET 6.0运行时](https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0)
@@ -35,9 +31,13 @@
 
 # 更新日志
 
-## [0.4.3] - 2024-09-01
+## [0.4.4] - 2024-11-10
 
 - 修复：不输入优先级提示无法识别的问题
+
+## [0.4.3] - 2024-09-01
+
+- 修复：不输入优先级提示无法识别的问题（修复失败）
 
 ## [0.4.2] - 2024-08-31
 
@@ -75,3 +75,17 @@
 ## [0.1.0] - 2024-06-23
 
 - 发布！
+
+## 前身
+
+### [词器v2](https://github.com/GarthTB/JDLibManager) - (20240605-20240620)
+
+- WPF框架，仅适用于Windows
+- 依赖[.NET 6.0运行时](https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0)
+- 仅适用于键道6输入法
+
+### [词器v1](https://github.com/GarthTB/CiQi) - (20230513-20231223)
+
+- WinForm框架，仅适用于Windows
+- 依赖[.NET 6.0运行时](https://dotnet.microsoft.com/zh-cn/download/dotnet/6.0)
+- 仅适用于键道6输入法
