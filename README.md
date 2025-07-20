@@ -1,5 +1,7 @@
 # 词器清单版
 
+# 20250720 重大更新！[新版链接](https://github.com/GarthTB/RimeDictManager) 此仓库不再维护！
+
 一个用于维护Rime版星空键道6输入法词库的Windows工具
 
 ## 环境依赖
